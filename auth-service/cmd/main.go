@@ -5,12 +5,12 @@ import (
     "log"
     "net/http"
     "time"
-
+    
     "github.com/gin-gonic/gin"
     "github.com/golang-jwt/jwt/v5"
     _ "github.com/lib/pq"
     "golang.org/x/crypto/bcrypt"
-
+    
     "github.com/ErzhanBersagurov/MVP_multibank/auth-service/models"
     "github.com/ErzhanBersagurov/MVP_multibank/auth-service/storage"
 )
@@ -22,6 +22,12 @@ func main() {
         log.Fatal(err)
     }
     defer db.Close()
+
+    // Проверка подключения
+    err = db.Ping()
+    if err != nil {
+        log.Fatal(err)
+    }
 
     storage := storage.NewStorage(db)
     r := gin.Default()
@@ -67,9 +73,20 @@ func main() {
             "exp":     time.Now().Add(time.Hour * 24).Unix(),
         })
 
-        tokenString, _ := token.SignedString([]byte("your-secret-key"))
+        tokenString, err := token.SignedString([]byte("your-secret-key"))
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
+            return
+        }
+
         c.JSON(http.StatusOK, gin.H{"token": tokenString})
     })
 
+    // Простой health check
+    r.GET("/health", func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{"status": "OK", "service": "auth-service"})
+    })
+
+    log.Println("Auth service starting on :8080")
     r.Run(":8080")
 }

@@ -2,7 +2,7 @@ package storage
 
 import (
     "database/sql"
-    "log" // ← ДОБАВЬТЕ ЭТОТ ИМПОРТ!
+    "log"
     
     "github.com/ErzhanBersagurov/MVP_multibank/auth-service/models"
     "golang.org/x/crypto/bcrypt"
@@ -19,7 +19,7 @@ func NewStorage(db *sql.DB) *Storage {
 func (s *Storage) CreateUser(user *models.User) error {
     hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
     if err != nil {
-        log.Printf("BCrypt error: %v", err) // ← ВНУТРИ ФУНКЦИИ!
+        log.Printf("BCrypt error: %v", err)
         return err
     }
     
@@ -29,9 +29,9 @@ func (s *Storage) CreateUser(user *models.User) error {
     ).Scan(&user.ID)
     
     if err != nil {
-        log.Printf("Database error: %v", err) // ← ВНУТРИ ФУНКЦИИ!
+        log.Printf("Database error: %v", err)
     } else {
-        log.Printf("User created successfully: ID=%d, Username=%s", user.ID, user.Username) // ← ВНУТРИ ФУНКЦИИ!
+        log.Printf("User created successfully: ID=%d, Username=%s", user.ID, user.Username)
     }
     
     return err
@@ -45,7 +45,7 @@ func (s *Storage) FindUserByUsername(username string) (*models.User, error) {
     ).Scan(&user.ID, &user.Username, &user.Email, &user.Password)
     
     if err != nil {
-        log.Printf("Find user error: %v", err) // ← ВНУТРИ ФУНКЦИИ!
+        log.Printf("Find user error: %v", err)
     }
     
     return user, err

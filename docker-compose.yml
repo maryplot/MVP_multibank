@@ -20,6 +20,14 @@ services:
       DATABASE_URL: "host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable"
     volumes:
       - ./pkg:/go/pkg/mod/github.com/ErzhanBersagurov/MVP_multibank/pkg@v0.0.0
+  accounts-service:    
+    build: ./accounts-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: "host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable"
 
 volumes:
   postgres_data:

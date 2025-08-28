@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { accountsService } from '../services/accounts';
+import TransferForm from './TransferForm';
 
 const Dashboard = () => {
   const [accounts, setAccounts] = useState([]);
@@ -8,30 +9,19 @@ const Dashboard = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Логируем токен для диагностики
-    const token = localStorage.getItem('token');
-    console.log('Токен в Dashboard:', token);
-    
     loadData();
   }, []);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      console.log('Начало загрузки данных...');
-      
       const [accountsData, balanceData] = await Promise.all([
         accountsService.getAccounts(),
         accountsService.getTotalBalance()
       ]);
-      
-      console.log('Получены accounts:', accountsData);
-      console.log('Получен balance:', balanceData);
-      
       setAccounts(accountsData);
       setTotalBalance(balanceData);
     } catch (err) {
-      console.error('Ошибка загрузки:', err);
       setError('Ошибка загрузки данных: ' + err.message);
     } finally {
       setLoading(false);
@@ -57,11 +47,15 @@ const Dashboard = () => {
         </h3>
       </div>
 
+      {/* Форма переводов */}
+      <TransferForm accounts={accounts} onTransferComplete={loadData} />
+
+      {/* Список счетов */}
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
         gap: '20px',
-        marginBottom: '30px'
+        marginTop: '30px'
       }}>
         {accounts.map(account => (
           <div key={account.id} style={{ 
@@ -89,13 +83,12 @@ const Dashboard = () => {
                 </strong>
               </p>
               <p>📊 Тип: {account.account_type}</p>
-              <p>🆔 ID: {account.id}</p>
             </div>
           </div>
         ))}
       </div>
 
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', marginTop: '30px' }}>
         <button 
           onClick={loadData}
           style={{ 

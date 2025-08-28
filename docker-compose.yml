@@ -18,7 +18,7 @@ services:
       - postgres
     environment:
       - DATABASE_URL=host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable
-      - JWT_SECRET=simple-secret-12345
+      - JWT_SECRET=simple-secret-12345 
     volumes:
       - ./pkg:/go/pkg/mod/github.com/ErzhanBersagurov/MVP_multibank/pkg@v0.0.0
 
@@ -32,7 +32,7 @@ services:
       - DATABASE_URL=host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable
       - JWT_SECRET=simple-secret-12345
  
-  transfer-service:    
+  transfer-service:
     build: ./transfer-service
     ports:
       - "8082:8082"
@@ -41,7 +41,21 @@ services:
       - JWT_SECRET=simple-secret-12345
     depends_on:
       - auth-service
-      - accounts-service  
+      - accounts-service
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8080
+    depends_on:
+      - auth-service
+      - accounts-service
+      - transfer-service
 
 volumes:
   postgres_data:

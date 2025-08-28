@@ -5,6 +5,7 @@ import (
     "net/http"
 
     "github.com/gin-gonic/gin"
+    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/middleware"
     "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/services"
 )
 
@@ -21,9 +22,12 @@ func main() {
         c.Next()
     })
 
+    // Добавляем JWT аутентификацию ко всем эндпоинтам
+    r.Use(middleware.JWTAuth())
+
     // Эндпоинт для получения всех счетов
     r.GET("/accounts", func(c *gin.Context) {
-        userID := 1 // Заглушка ID пользователя (в реальности из JWT)
+        userID := c.GetInt("userID") // Теперь из JWT токена!
         
         accounts, err := bankService.GetAllAccounts(userID)
         if err != nil {
@@ -36,7 +40,7 @@ func main() {
 
     // Эндпоинт для получения счетов конкретного банка
     r.GET("/accounts/:bank", func(c *gin.Context) {
-        userID := 1
+        userID := c.GetInt("userID") // Из JWT токена
         bankName := c.Param("bank")
 
         accounts, err := bankService.GetBankAccounts(userID, bankName)
@@ -50,7 +54,7 @@ func main() {
 
     // Эндпоинт для общего баланса
     r.GET("/balance", func(c *gin.Context) {
-        userID := 1
+        userID := c.GetInt("userID") // Из JWT токена
 
         totalBalance, err := bankService.GetTotalBalance(userID)
         if err != nil {
@@ -74,7 +78,7 @@ func main() {
         c.JSON(http.StatusOK, account)
     })
 
-    // Health check
+    // Health check (без аутентификации)
     r.GET("/health", func(c *gin.Context) {
         c.JSON(http.StatusOK, gin.H{"status": "OK", "service": "accounts-service"})
     })

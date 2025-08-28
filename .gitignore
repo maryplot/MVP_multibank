@@ -1,18 +1,37 @@
-# Игнорировать node_modules для фронтенда
-frontend/node_modules/
-
-# Игнорировать кеши и логи Python, если будете использовать его
-__pycache__/
-*.pyc
-
-# Игнорировать бинарные файлы Go, если будете использовать его
-*/bin/
-*/vendor/
-
-# Игнорировать файлы окружения с паролями!
+# Environment variables
 .env
+*.env
 .env.local
+.env.production
 
-# Игнорировать служебные файлы IDE
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# Go
+bin/
+vendor/
+*.exe
+*.test
+
+# Node.js (для фронтенда)
+frontend/node_modules/
+frontend/dist/
+frontend/.npm/
+
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Базы данных
+*.db
+*.sqlite

@@ -17,9 +17,11 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: "host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable"
+      - DATABASE_URL=host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable
+      - JWT_SECRET=simple-secret-12345
     volumes:
-      - ./pkg:/go/pkg/mod/github.com/ErzhanBersagurov/MVP_multibank/pkg@v0.0.0
+      - ./pkg:/go/pkg/mod/github.com/ErzhanBersagurov/MVP_multibank/pkg@v0.0.0  # ← ПРОБЕЛЫ ЗДЕСЬ!
+
   accounts-service:    
     build: ./accounts-service
     ports:
@@ -27,7 +29,8 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: "host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable"
+      - DATABASE_URL=host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable
+      - JWT_SECRET=simple-secret-12345
 
 volumes:
   postgres_data:

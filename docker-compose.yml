@@ -20,7 +20,7 @@ services:
       - DATABASE_URL=host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable
       - JWT_SECRET=simple-secret-12345
     volumes:
-      - ./pkg:/go/pkg/mod/github.com/ErzhanBersagurov/MVP_multibank/pkg@v0.0.0  # ← ПРОБЕЛЫ ЗДЕСЬ!
+      - ./pkg:/go/pkg/mod/github.com/ErzhanBersagurov/MVP_multibank/pkg@v0.0.0
 
   accounts-service:    
     build: ./accounts-service
@@ -31,6 +31,17 @@ services:
     environment:
       - DATABASE_URL=host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable
       - JWT_SECRET=simple-secret-12345
+ 
+  transfer-service:    
+    build: ./transfer-service
+    ports:
+      - "8082:8082"
+    environment:
+      - DATABASE_URL=host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable
+      - JWT_SECRET=simple-secret-12345
+    depends_on:
+      - auth-service
+      - accounts-service  
 
 volumes:
   postgres_data:

@@ -22,5 +22,10 @@ export const accountsService = {
       currency: currency
     });
     return response.data;
+  }, 
+  // Получить историю транзакций
+  getTransactionHistory: async () => {
+    const response = await api.get('/transfer/history');
+    return response.data.transactions;
   }
 };

@@ -3,6 +3,7 @@ package main
 import (
     "log"
     "net/http"
+    
 
     "github.com/gin-gonic/gin"
     "github.com/ErzhanBersagurov/MVP_multibank/transfer-service/middleware"
@@ -18,17 +19,22 @@ func main() {
     // JWT аутентификация
     r.Use(middleware.JWTAuth())
 
+    // Логирование всех запросов
+    r.Use(func(c *gin.Context) {
+        log.Printf("📍 Incoming request: %s %s", c.Request.Method, c.Request.URL.Path)
+        c.Next()
+    })
+
     // Перевод между своими счетами
     r.POST("/transfer/internal", func(c *gin.Context) {
         userID := c.GetInt("userID")
+        log.Printf("🔄 Internal transfer request from user %d", userID)
         
         var req models.TransferRequest
         if err := c.ShouldBindJSON(&req); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
             return
         }
-
-        // TODO: Проверка что оба счета принадлежат пользователю
 
         transaction, err := transferService.InternalTransfer(userID, req)
         if err != nil {
@@ -42,11 +48,24 @@ func main() {
         })
     })
 
+    // История транзакций
+    r.GET("/transfer/history", func(c *gin.Context) {
+        userID := c.GetInt("userID")
+        transactions := transferService.GetTransactionHistory(userID)
+        c.JSON(http.StatusOK, gin.H{"transactions": transactions})
+    })
+
     // Health check
     r.GET("/health", func(c *gin.Context) {
         c.JSON(http.StatusOK, gin.H{"status": "OK", "service": "transfer-service"})
     })
 
-    log.Println("Transfer service starting on :8082")
+    // Отладочный эндпоинт - список всех routes
+    r.GET("/debug/routes", func(c *gin.Context) {
+        routes := r.Routes()
+        c.JSON(http.StatusOK, gin.H{"routes": routes})
+    })
+
+    log.Println("🚀 Transfer service starting on :8082")
     r.Run(":8082")
 }

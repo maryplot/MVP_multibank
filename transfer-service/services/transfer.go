@@ -1,44 +1,48 @@
 package services
 
 import (
-    "log"
-    "time"  // ← ДОБАВИТЬ ИМПОРТ time
+    "fmt"       // ← ДОБАВИТЬ
+    "sync"
+    "time"      // ← ДОБАВИТЬ
 
     "github.com/ErzhanBersagurov/MVP_multibank/transfer-service/models"
 )
 
 type TransferService struct {
-    // В будущем добавим подключение к БД и банковским API
+    transactions []models.Transaction
+    mutex        sync.Mutex
 }
 
 func NewTransferService() *TransferService {
-    return &TransferService{}
+    return &TransferService{
+        transactions: []models.Transaction{},
+    }
 }
 
 func (s *TransferService) InternalTransfer(userID int, req models.TransferRequest) (*models.Transaction, error) {
-    log.Printf("Processing internal transfer for user %d: %s -> %s (%.2f %s)",
-        userID, req.FromAccount, req.ToAccount, req.Amount, req.Currency)
+    s.mutex.Lock()
+    defer s.mutex.Unlock()
 
-    // TODO: Реальная проверка принадлежности счетов пользователю
-    // TODO: Проверка достаточности средств
-    // TODO: Интеграция с банковскими API
-
-    // Заглушка для демо
-    transaction := &models.Transaction{
-        ID:          "trx_123456",
+    transaction := models.Transaction{
+        ID:          generateTransactionID(),
         FromAccount: req.FromAccount,
         ToAccount:   req.ToAccount,
         Amount:      req.Amount,
         Currency:    req.Currency,
         Status:      "completed",
-        CreatedAt:   time.Now(),  // ← Теперь time определен
+        CreatedAt:   time.Now(),
     }
 
-    return transaction, nil
+    s.transactions = append(s.transactions, transaction)
+    return &transaction, nil
 }
 
-func (s *TransferService) ValidateAccounts(userID int, accountIDs []string) error {
-    // TODO: Реальная проверка что счета принадлежат пользователю
-    // Пока заглушка
-    return nil
+func (s *TransferService) GetTransactionHistory(userID int) []models.Transaction {
+    s.mutex.Lock()
+    defer s.mutex.Unlock()
+    return s.transactions
+}
+
+func generateTransactionID() string {
+    return fmt.Sprintf("trx_%d", time.Now().Unix())
 }

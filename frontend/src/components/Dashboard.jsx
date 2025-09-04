@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { accountsService } from '../services/accounts';
-import TransferForm from './TransferForm';
+import TransferForm from './TransferForm'; 
+import TransactionHistory from './TransactionHistory';
 
 const Dashboard = () => {
   const [accounts, setAccounts] = useState([]);
@@ -87,7 +88,7 @@ const Dashboard = () => {
           </div>
         ))}
       </div>
-
+      <TransactionHistory />
       <div style={{ textAlign: 'center', marginTop: '30px' }}>
         <button 
           onClick={loadData}

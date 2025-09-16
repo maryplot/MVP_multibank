@@ -39,21 +39,8 @@ function App() {
   }
 
   return (
-    <div>
-      <header style={{ 
-        padding: '20px', 
-        background: '#f5f5f5', 
-        display: 'flex', 
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <h1>Мультибанк</h1>
-        <button onClick={handleLogout}>Выйти</button>
-      </header>
-      
-      <main>
-        <Dashboard />
-      </main>
+    <div className="app">
+      <Dashboard onLogout={handleLogout} />
     </div>
   );
 }

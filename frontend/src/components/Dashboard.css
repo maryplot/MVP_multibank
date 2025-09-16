@@ -1,0 +1,238 @@
+.dashboard {
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  background: var(--bg-secondary);
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.error {
+  color: #ff3b30;
+}
+
+/* Header */
+.header {
+  margin-bottom: 30px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.theme-toggle {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  border-color: #007AFF;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid #EF3124;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.username {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+}
+
+/* Bank Icons */
+.bank-icons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 40px;
+  justify-content: flex-start;
+}
+
+.bank-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.bank-icon:hover {
+  transform: translateY(-2px);
+}
+
+.bank-icon.add-bank {
+  background-color: white;
+  border: 2px solid #ddd;
+  color: #666;
+}
+
+.bank-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  background: white;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+/* Accounts Section */
+.accounts-section h2 {
+  font-size: 20px;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.account-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0;
+}
+
+.card-visual {
+  width: 80px;
+  height: 50px;
+  border: 2px solid;
+  border-radius: 8px;
+  position: relative;
+  background: var(--card-bg);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.card-chip {
+  width: 20px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.account-info {
+  flex: 1;
+}
+
+.balance {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.card-number {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-family: 'Courier New', monospace;
+  transition: color 0.3s ease;
+}
+
+/* Transfer Section */
+.transfer-section {
+  margin-bottom: 30px;
+}
+
+.transfer-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.transfer-button:hover {
+  border-color: #EF3124;
+  transform: translateY(-1px);
+}
+
+.transfer-button span {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.transfer-icon {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #EF3124;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EF3124;
+}
+
+/* Code Section */
+.code-section {
+  text-align: center;
+}
+
+.code-button {
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+  border-radius: 25px;
+  padding: 15px 40px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.code-button:hover {
+  background: #e0e0e0;
+  transform: translateY(-1px);
+}

@@ -9,12 +9,14 @@ import (
 )
 
 type BankService struct {
+    alfaClient    *clients.AlfaClient
     tinkoffClient *clients.TinkoffClient
     sberClient    *clients.SberClient
 }
 
 func NewBankService(tinkoffToken, sberToken string) *BankService {
     return &BankService{
+        alfaClient:    clients.NewAlfaClient("alfa_demo_token"),
         tinkoffClient: clients.NewTinkoffClient(tinkoffToken),
         sberClient:    clients.NewSberClient(sberToken),
     }
@@ -25,6 +27,14 @@ func (s *BankService) GetAllAccounts(userID int) ([]models.Account, error) {
     log.Printf("Getting accounts for user %d from all banks", userID)
     
     var allAccounts []models.Account
+
+    // Получаем счета из Альфа-банка (первым)
+    alfaAccounts, err := s.alfaClient.GetAccounts(userID)
+    if err != nil {
+        log.Printf("Error getting Alfa accounts: %v", err)
+    } else {
+        allAccounts = append(allAccounts, alfaAccounts...)
+    }
 
     // Получаем счета из Тинькофф
     tinkoffAccounts, err := s.tinkoffClient.GetAccounts(userID)
@@ -64,6 +74,8 @@ func (s *BankService) GetTotalBalance(userID int) (float64, error) {
 // GetBankAccounts возвращает счета конкретного банка
 func (s *BankService) GetBankAccounts(userID int, bankName string) ([]models.Account, error) {
     switch bankName {
+    case "alfa", "Альфа-Банк":
+        return s.alfaClient.GetAccounts(userID)
     case "tinkoff", "Тинькофф":
         return s.tinkoffClient.GetAccounts(userID)
     case "sber", "Сбербанк":
@@ -77,6 +89,8 @@ func (s *BankService) GetBankAccounts(userID int, bankName string) ([]models.Acc
 func (s *BankService) GetAccountDetail(accountID string) (*models.Account, error) {
     // Определяем банк по префиксу accountID
     switch {
+    case len(accountID) >= 4 && accountID[:4] == "alfa":
+        return s.alfaClient.GetAccountDetails(accountID)
     case len(accountID) >= 6 && accountID[:6] == "tinkoff":
         return s.tinkoffClient.GetAccountDetails(accountID)
     case len(accountID) >= 4 && accountID[:4] == "sber":

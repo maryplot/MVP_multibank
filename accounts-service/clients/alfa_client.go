@@ -25,16 +25,7 @@ func (c *AlfaClient) GetAccounts(userID int) ([]models.Account, error) {
             AccountNumber: "****1111",
             Balance:       320000.00,
             Currency:      "RUB",
-            AccountType:   "debit",
-        },
-        {
-            ID:            "alfa_222", 
-            UserID:        userID,
-            BankName:      "Альфа-Банк",
-            AccountNumber: "****2222",
-            Balance:       180000.50,
-            Currency:      "RUB",
-            AccountType:   "credit",
+            AccountType:   "зарплатная карта",
         },
     }, nil
 }

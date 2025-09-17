@@ -11,6 +11,11 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [fromAccount, setFromAccount] = useState('');
+  const [toAccount, setToAccount] = useState('');
+  const [transferAmount, setTransferAmount] = useState('');
+  const [transferCode, setTransferCode] = useState('');
 
   useEffect(() => {
     // Check for saved theme preference or default to light mode
@@ -32,6 +37,62 @@ const Dashboard = () => {
       document.documentElement.removeAttribute('data-theme');
       localStorage.setItem('theme', 'light');
     }
+  };
+
+  const handleTransfer = () => {
+    setShowTransferModal(true);
+  };
+
+  const executeTransfer = async () => {
+    if (!fromAccount || !toAccount || !transferAmount || !transferCode) {
+      alert('Пожалуйста, заполните все поля');
+      return;
+    }
+
+    if (transferCode !== '1234') {
+      alert('Неверный код подтверждения');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8082/transfer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          from_account: fromAccount,
+          to_account: toAccount,
+          amount: parseFloat(transferAmount)
+        })
+      });
+
+      if (response.ok) {
+        alert('Перевод выполнен успешно!');
+        setShowTransferModal(false);
+        setFromAccount('');
+        setToAccount('');
+        setTransferAmount('');
+        setTransferCode('');
+        // Обновляем данные
+        loadData();
+      } else {
+        alert('Ошибка при выполнении перевода');
+      }
+    } catch (error) {
+      console.error('Transfer error:', error);
+      alert('Ошибка при выполнении перевода');
+    }
+  };
+
+  const closeTransferModal = () => {
+    setShowTransferModal(false);
+    setFromAccount('');
+    setToAccount('');
+    setTransferAmount('');
+    setTransferCode('');
   };
 
   useEffect(() => {
@@ -151,6 +212,7 @@ const Dashboard = () => {
                   ></div>
                 </div>
                 <div className="account-info">
+                  <div className="account-name">{account.account_type}</div>
                   <div className="balance">{account.balance.toLocaleString('ru-RU', { minimumFractionDigits: 2 })} ₽</div>
                   <div className="card-number">xxxx xx{account.account_number.slice(-2)}</div>
                 </div>
@@ -162,7 +224,7 @@ const Dashboard = () => {
 
       {/* Transfer section */}
       <div className="transfer-section">
-        <div className="transfer-button">
+        <button className="transfer-button" onClick={handleTransfer}>
           <span>Перевод себе</span>
           <div className="transfer-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -171,13 +233,66 @@ const Dashboard = () => {
               <path d="M5 15L6.09 18.26L10 19L6.09 19.74L5 23L3.91 19.74L0 19L3.91 18.26L5 15Z" fill="white"/>
             </svg>
           </div>
-        </div>
+        </button>
       </div>
 
-      {/* Code input button */}
-      <div className="code-section">
-        <button className="code-button">введите код</button>
-      </div>
+      {/* Transfer Modal */}
+      {showTransferModal && (
+        <div className="modal-overlay" onClick={closeTransferModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Перевод между счетами</h3>
+            
+            <div className="form-group">
+              <label>Откуда перевести:</label>
+              <select value={fromAccount} onChange={(e) => setFromAccount(e.target.value)}>
+                <option value="">Выберите счет</option>
+                {accounts.map(account => (
+                  <option key={account.id} value={account.id}>
+                    {account.account_type} - {account.balance.toLocaleString('ru-RU', { minimumFractionDigits: 2 })} ₽
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Куда перевести:</label>
+              <select value={toAccount} onChange={(e) => setToAccount(e.target.value)}>
+                <option value="">Выберите счет</option>
+                {accounts.filter(account => account.id !== fromAccount).map(account => (
+                  <option key={account.id} value={account.id}>
+                    {account.account_type} - {account.balance.toLocaleString('ru-RU', { minimumFractionDigits: 2 })} ₽
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Сумма перевода:</label>
+              <input
+                type="number"
+                value={transferAmount}
+                onChange={(e) => setTransferAmount(e.target.value)}
+                placeholder="Введите сумму"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Код подтверждения:</label>
+              <input
+                type="text"
+                value={transferCode}
+                onChange={(e) => setTransferCode(e.target.value)}
+                placeholder="Введите код (1234)"
+              />
+            </div>
+
+            <div className="modal-buttons">
+              <button className="cancel-button" onClick={closeTransferModal}>Отмена</button>
+              <button className="confirm-button" onClick={executeTransfer}>Перевести</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

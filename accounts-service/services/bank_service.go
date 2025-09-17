@@ -6,6 +6,7 @@ import (
 
     "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/clients"
     "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/models"
+    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/storage"
 )
 
 type BankService struct {
@@ -50,6 +51,14 @@ func (s *BankService) GetAllAccounts(userID int) ([]models.Account, error) {
         log.Printf("Error getting Sber accounts: %v", err)
     } else {
         allAccounts = append(allAccounts, sberAccounts...)
+    }
+
+    // Применяем изменения балансов из transfer-service
+    balanceStorage := storage.GetInstance()
+    for i := range allAccounts {
+        accountID := allAccounts[i].ID
+        balanceChange := balanceStorage.GetBalanceChange(accountID)
+        allAccounts[i].Balance += balanceChange
     }
 
     log.Printf("Retrieved %d accounts total", len(allAccounts))

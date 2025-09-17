@@ -25,25 +25,16 @@ func (c *SberClient) GetAccounts(userID int) ([]models.Account, error) {
             AccountNumber: "****9012",
             Balance:       275000.75,
             Currency:      "RUB",
-            AccountType:   "debit",
+            AccountType:   "на отдых",
         },
         {
-            ID:            "sber_345", 
+            ID:            "sber_345",
             UserID:        userID,
             BankName:      "Сбербанк",
             AccountNumber: "****3456",
             Balance:       125000.25,
             Currency:      "RUB",
-            AccountType:   "savings",
-        },
-        {
-            ID:            "sber_678",
-            UserID:        userID,
-            BankName:      "Сбербанк",
-            AccountNumber: "****7890",
-            Balance:       50000.00,
-            Currency:      "USD",
-            AccountType:   "multi-currency",
+            AccountType:   "на всякий случай",
         },
     }, nil
 }

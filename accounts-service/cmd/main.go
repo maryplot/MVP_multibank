@@ -7,6 +7,7 @@ import (
     "github.com/gin-gonic/gin"
     "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/middleware"
     "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/services"
+    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/storage"
 )
 
 func main() {
@@ -76,6 +77,32 @@ func main() {
         }
 
         c.JSON(http.StatusOK, account)
+    })
+
+    // Эндпоинт для обновления балансов (используется transfer-service)
+    r.POST("/balance/update", func(c *gin.Context) {
+        var req struct {
+            FromAccount string  `json:"from_account"`
+            ToAccount   string  `json:"to_account"`
+            Amount      float64 `json:"amount"`
+        }
+        
+        if err := c.ShouldBindJSON(&req); err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+            return
+        }
+        
+        balanceStorage := storage.GetInstance()
+        
+        // Уменьшаем баланс счета-источника
+        balanceStorage.UpdateBalance(req.FromAccount, -req.Amount)
+        
+        // Увеличиваем баланс счета-получателя
+        balanceStorage.UpdateBalance(req.ToAccount, req.Amount)
+        
+        log.Printf("Updated balances: %s -%f, %s +%f", req.FromAccount, req.Amount, req.ToAccount, req.Amount)
+        
+        c.JSON(http.StatusOK, gin.H{"message": "Balances updated successfully"})
     })
 
     // Health check (без аутентификации)

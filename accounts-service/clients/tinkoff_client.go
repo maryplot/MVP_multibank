@@ -22,16 +22,7 @@ func (c *TinkoffClient) GetAccounts(userID int) ([]models.Account, error) {
             AccountNumber: "****1234",
             Balance:       150000.50,
             Currency:      "RUB",
-            AccountType:   "debit",
-        },
-        {
-            ID:            "tinkoff_456",
-            UserID:        userID,
-            BankName:      "Тинькофф",
-            AccountNumber: "****5678",
-            Balance:       89000.30,
-            Currency:      "RUB",
-            AccountType:   "investment",
+            AccountType:   "стипендиальная карта",
         },
     }, nil
 }

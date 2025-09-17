@@ -16,6 +16,20 @@ func main() {
     
     r := gin.Default()
 
+    // CORS middleware
+    r.Use(func(c *gin.Context) {
+        c.Header("Access-Control-Allow-Origin", "*")
+        c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+        
+        if c.Request.Method == "OPTIONS" {
+            c.AbortWithStatus(204)
+            return
+        }
+        
+        c.Next()
+    })
+
     // JWT аутентификация
     r.Use(middleware.JWTAuth())
 
@@ -25,7 +39,33 @@ func main() {
         c.Next()
     })
 
-    // Перевод между своими счетами
+    // Перевод между своими счетами (основной эндпоинт для frontend)
+    r.POST("/transfer", func(c *gin.Context) {
+        userID := c.GetInt("userID")
+        log.Printf("🔄 Transfer request from user %d", userID)
+        
+        var req models.TransferRequest
+        if err := c.ShouldBindJSON(&req); err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+            return
+        }
+
+        // Получаем JWT токен из заголовка
+        authToken := c.GetHeader("Authorization")
+        
+        transaction, err := transferService.InternalTransfer(userID, req, authToken)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
+
+        c.JSON(http.StatusOK, gin.H{
+            "message": "Transfer completed successfully",
+            "transaction": transaction,
+        })
+    })
+
+    // Перевод между своими счетами (альтернативный эндпоинт)
     r.POST("/transfer/internal", func(c *gin.Context) {
         userID := c.GetInt("userID")
         log.Printf("🔄 Internal transfer request from user %d", userID)
@@ -36,7 +76,10 @@ func main() {
             return
         }
 
-        transaction, err := transferService.InternalTransfer(userID, req)
+        // Получаем JWT токен из заголовка
+        authToken := c.GetHeader("Authorization")
+        
+        transaction, err := transferService.InternalTransfer(userID, req, authToken)
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return

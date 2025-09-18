@@ -4,6 +4,7 @@ import './Dashboard.css';
 import alfaIcon from '../assets/icon_alfa.png';
 import sberIcon from '../assets/icon_sber.png';
 import tbankIcon from '../assets/icon_tbank.png';
+import avatarImage from '../assets/avatar.jpg';
 
 const Dashboard = () => {
   const [accounts, setAccounts] = useState([]);
@@ -162,7 +163,7 @@ const Dashboard = () => {
       <div className="header">
         <div className="user-profile">
           <div className="avatar">
-            <img src="https://i.pravatar.cc/60?img=3" alt="Антон" />
+            <img src={avatarImage} alt="Антон" />
           </div>
           <span className="username">АНТОН</span>
           <button className="theme-toggle" onClick={toggleTheme}>

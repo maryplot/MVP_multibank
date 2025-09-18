@@ -2,11 +2,14 @@ import { useState } from 'react';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
+import ExpensesPage from './components/ExpensesPage';
+import BottomNavigation from './components/BottomNavigation';
 import './App.css'
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [showRegister, setShowRegister] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   const handleLogin = (newToken) => {
     setToken(newToken);
@@ -24,14 +27,18 @@ function App() {
     setToken(null);
   };
 
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
   if (!token) {
     return showRegister ? (
-      <Register 
+      <Register
         onRegister={handleRegister}
         onSwitchToLogin={() => setShowRegister(false)}
       />
     ) : (
-      <Login 
+      <Login
         onLogin={handleLogin}
         onSwitchToRegister={() => setShowRegister(true)}
       />
@@ -40,7 +47,18 @@ function App() {
 
   return (
     <div className="app">
-      <Dashboard onLogout={handleLogout} />
+      <div className="app-content">
+        {activeTab === 'dashboard' && (
+          <Dashboard onLogout={handleLogout} />
+        )}
+        {activeTab === 'expenses' && (
+          <ExpensesPage onBack={() => setActiveTab('dashboard')} />
+        )}
+      </div>
+      <BottomNavigation
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+      />
     </div>
   );
 }

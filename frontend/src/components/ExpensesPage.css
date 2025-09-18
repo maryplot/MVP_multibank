@@ -1,0 +1,604 @@
+.expenses-page {
+  padding: 20px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.expenses-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-color);
+  cursor: pointer;
+  margin-right: 15px;
+  padding: 5px;
+}
+
+.expenses-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.tab-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card-bg);
+  border-radius: 25px;
+  padding: 4px 8px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  border-radius: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+.tab-button:not(.active) {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+.tab-button.active {
+  background: #007AFF;
+  color: white;
+  opacity: 1;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Ensure good contrast in light theme */
+[data-theme="light"] .tab-button.active {
+  background: #0056CC;
+  color: white;
+}
+
+/* Dark theme active button */
+[data-theme="dark"] .tab-button.active {
+  background: #007AFF;
+  color: white;
+}
+
+.tab-separator {
+  color: var(--text-secondary);
+  font-size: 16px;
+  opacity: 0.5;
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+.total-amount {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 30px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.chart-container {
+  margin-bottom: 40px;
+}
+
+.bar-chart {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 280px;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 80px;
+}
+
+.bar-amount {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.bar {
+  width: 40px;
+  border-radius: 20px 20px 0 0;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.bar-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.bank-icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  background: white;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.category-icon {
+  font-size: 24px;
+  margin-top: 10px;
+}
+
+.pie-chart-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.pie-chart {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ef4444 0deg 120deg,
+    #22c55e 120deg 240deg,
+    #eab308 240deg 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.pie-chart-inner {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pie-total {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.limits-section {
+  margin-bottom: 40px;
+}
+
+.limits-section h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.limits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.limit-item {
+  background: var(--card-bg);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.limit-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.limit-bar {
+  height: 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.limit-progress {
+  height: 100%;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.limit-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.loyalty-section {
+  margin-bottom: 40px;
+}
+
+.loyalty-section h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.loyalty-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.loyalty-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.loyalty-icon {
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid #e5e7eb;
+}
+
+[data-theme="dark"] .loyalty-icon {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.loyalty-content {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.loyalty-category {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.loyalty-banks {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.loyalty-bank {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.loyalty-bank span {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Мои предложения */
+.offers-section {
+  margin: 20px 0;
+  padding: 20px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.offers-section h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.offers-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.offer-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.offer-icon {
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid #e5e7eb;
+}
+
+[data-theme="dark"] .offer-icon {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.offer-content {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.offer-title {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.offer-banks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.offer-banks .bank-icon-img {
+  width: 24px;
+  height: 24px;
+}
+
+/* Кликабельные элементы */
+.clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.clickable:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.clickable:active {
+  transform: translateY(0);
+}
+
+.bar-item.clickable:hover .bar {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.pie-chart.clickable:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Модальное окно */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.modal-close:hover {
+  background: var(--bg-secondary);
+}
+
+.modal-body {
+  padding: 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  gap: 15px;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-date {
+  font-size: 12px;
+  color: var(--text-secondary);
+  min-width: 70px;
+  font-weight: 500;
+}
+
+.history-details {
+  flex: 1;
+}
+
+.history-description {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 4px;
+}
+
+.history-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.history-category,
+.history-bank {
+  background: var(--bg-secondary);
+  padding: 2px 8px;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.history-amount {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  min-width: 80px;
+  text-align: right;
+}
+
+/* Темная тема для модального окна */
+[data-theme="dark"] .modal-content {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .modal-header {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .history-item {
+  border-bottom-color: var(--border-color);
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .pie-chart {
+  background: conic-gradient(
+    #dc2626 0deg 120deg,
+    #16a34a 120deg 240deg,
+    #ca8a04 240deg 360deg
+  );
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .expenses-page {
+    padding: 15px;
+  }
+  
+  .bar-chart {
+    height: 240px;
+  }
+  
+  .bar {
+    width: 30px;
+  }
+  
+  .bar-logo {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .total-amount {
+    font-size: 28px;
+  }
+  
+  .limits-grid {
+    grid-template-columns: 1fr;
+  }
+}

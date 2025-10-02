@@ -6,9 +6,9 @@ import (
     
 
     "github.com/gin-gonic/gin"
-    "github.com/ErzhanBersagurov/MVP_multibank/transfer-service/middleware"
-    "github.com/ErzhanBersagurov/MVP_multibank/transfer-service/models"
-    "github.com/ErzhanBersagurov/MVP_multibank/transfer-service/services"
+    "transfer-service/middleware"
+    "transfer-service/models"
+    "transfer-service/services"
 )
 
 func main() {

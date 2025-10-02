@@ -9,8 +9,8 @@ import (
     "github.com/golang-jwt/jwt/v5"
     "golang.org/x/crypto/bcrypt"
     
-    "github.com/ErzhanBersagurov/MVP_multibank/auth-service/models"
-    "github.com/ErzhanBersagurov/MVP_multibank/auth-service/storage"
+    "auth-service/models"
+    "auth-service/storage"
 )
 
 type AuthHandler struct {

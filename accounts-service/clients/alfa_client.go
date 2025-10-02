@@ -1,7 +1,7 @@
 package clients
 
 import (
-    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/models"
+    "accounts-service/models"
 )
 
 // AlfaClient представляет клиент для работы с Альфа-банком (заглушка для демо)

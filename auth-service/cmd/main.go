@@ -4,10 +4,9 @@ import (
 	"log"
     "os"
     
-    "github.com/ErzhanBersagurov/MVP_multibank/auth-service/database"
-    "github.com/ErzhanBersagurov/MVP_multibank/auth-service/handlers"
-    
-    "github.com/ErzhanBersagurov/MVP_multibank/auth-service/storage"
+    "auth-service/database"
+    "auth-service/handlers"
+    "auth-service/storage"
 )
 
 func main() {

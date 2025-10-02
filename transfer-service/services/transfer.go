@@ -8,7 +8,7 @@ import (
     "sync"
     "time"
 
-    "github.com/ErzhanBersagurov/MVP_multibank/transfer-service/models"
+    "transfer-service/models"
 )
 
 type TransferService struct {
@@ -34,6 +34,7 @@ func (s *TransferService) InternalTransfer(userID int, req models.TransferReques
 
     transaction := models.Transaction{
         ID:          generateTransactionID(),
+        UserID:      userID,
         FromAccount: req.FromAccount,
         ToAccount:   req.ToAccount,
         Amount:      req.Amount,
@@ -85,7 +86,14 @@ func (s *TransferService) updateAccountBalances(fromAccount, toAccount string, a
 func (s *TransferService) GetTransactionHistory(userID int) []models.Transaction {
     s.mutex.Lock()
     defer s.mutex.Unlock()
-    return s.transactions
+    
+    var userTransactions []models.Transaction
+    for _, tx := range s.transactions {
+        if tx.UserID == userID {
+            userTransactions = append(userTransactions, tx)
+        }
+    }
+    return userTransactions
 }
 
 func generateTransactionID() string {

@@ -1,7 +1,7 @@
 package clients
 
 import (
-    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/models"
+    "accounts-service/models"
 )
 
 type TinkoffClient struct {

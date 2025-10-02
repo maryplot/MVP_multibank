@@ -1,4 +1,4 @@
-module github.com/ErzhanBersagurov/MVP_multibank/accounts-service
+module accounts-service
 
 go 1.25.0
 

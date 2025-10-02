@@ -4,7 +4,7 @@ import (
     "database/sql"
 
     
-    "github.com/ErzhanBersagurov/MVP_multibank/auth-service/models"
+    "auth-service/models"
     "golang.org/x/crypto/bcrypt"
 )
 

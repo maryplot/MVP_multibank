@@ -12,7 +12,7 @@ import (
 func InitDB() (*sql.DB, error) {
     connStr := os.Getenv("DATABASE_URL")
     if connStr == "" {
-        connStr = "host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable"
+        connStr = "host=localhost user=postgres password=postgres dbname=auth_db sslmode=disable"
     }
     
     db, err := sql.Open("postgres", connStr)

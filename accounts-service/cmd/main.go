@@ -1,13 +1,14 @@
 package main
 
 import (
+    "io"
     "log"
     "net/http"
 
     "github.com/gin-gonic/gin"
-    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/middleware"
-    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/services"
-    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/storage"
+    "accounts-service/middleware"
+    "accounts-service/services"
+    "accounts-service/storage"
 )
 
 func main() {
@@ -69,8 +70,10 @@ func main() {
     // Эндпоинт для деталей счета
     r.GET("/accounts/detail/:id", func(c *gin.Context) {
         accountID := c.Param("id")
+        userID := c.GetInt("userID")
+        authToken := c.GetHeader("Authorization")
 
-        account, err := bankService.GetAccountDetail(accountID)
+        account, err := bankService.GetAccountDetail(accountID, userID, authToken)
         if err != nil {
             c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
             return

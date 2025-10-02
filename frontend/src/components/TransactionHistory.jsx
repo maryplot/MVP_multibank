@@ -30,8 +30,9 @@ const TransactionHistory = () => {
   if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
   return (
-    <div style={{ 
-      marginTop: '40px',
+    <div style={{
+      marginTop: '20px',
+      marginBottom: '20px',
       padding: '20px',
       background: '#fff',
       borderRadius: '10px',

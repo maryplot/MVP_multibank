@@ -1,0 +1,2 @@
+DELETE FROM users WHERE username = 'testuser';
+INSERT INTO users (username, email, password) VALUES ('testuser', 'testuser@example.com', '$2a$10$5KLhbmh.cAvLl4Djc2vpue37H83qZkU0X2j.Gj2eC3nQPZSOKOiom');

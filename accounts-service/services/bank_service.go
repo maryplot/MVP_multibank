@@ -1,12 +1,14 @@
 package services
 
 import (
+    "encoding/json"
     "fmt"
     "log"
+    "net/http"
 
-    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/clients"
-    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/models"
-    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/storage"
+    "accounts-service/clients"
+    "accounts-service/models"
+    "accounts-service/storage"
 )
 
 type BankService struct {
@@ -95,16 +97,62 @@ func (s *BankService) GetBankAccounts(userID int, bankName string) ([]models.Acc
 }
 
 // GetAccountDetail возвращает детальную информацию о счете
-func (s *BankService) GetAccountDetail(accountID string) (*models.Account, error) {
+func (s *BankService) GetAccountDetail(accountID string, userID int, authToken string) (*models.Account, error) {
+    var account *models.Account
+    var err error
+
     // Определяем банк по префиксу accountID
     switch {
     case len(accountID) >= 4 && accountID[:4] == "alfa":
-        return s.alfaClient.GetAccountDetails(accountID)
+        account, err = s.alfaClient.GetAccountDetails(accountID)
     case len(accountID) >= 6 && accountID[:6] == "tinkoff":
-        return s.tinkoffClient.GetAccountDetails(accountID)
+        account, err = s.tinkoffClient.GetAccountDetails(accountID)
     case len(accountID) >= 4 && accountID[:4] == "sber":
-        return s.sberClient.GetAccountDetails(accountID)
+        account, err = s.sberClient.GetAccountDetails(accountID)
     default:
         return nil, fmt.Errorf("unknown account type: %s", accountID)
     }
+
+    if err != nil {
+        return nil, err
+    }
+
+    // Получаем историю транзакций
+    history, err := s.getTransactionHistory(userID, authToken)
+    if err != nil {
+        log.Printf("Error getting transaction history: %v", err)
+        // Не возвращаем ошибку, просто логируем
+    } else {
+        account.TransactionHistory = history
+    }
+
+    return account, nil
+}
+
+func (s *BankService) getTransactionHistory(userID int, authToken string) ([]models.Transaction, error) {
+    client := &http.Client{}
+    req, err := http.NewRequest("GET", "http://localhost:8082/transfer/history", nil)
+    if err != nil {
+        return nil, err
+    }
+
+    req.Header.Set("Authorization", authToken)
+    resp, err := client.Do(req)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
+        return nil, fmt.Errorf("transfer-service returned status %d", resp.StatusCode)
+    }
+
+    var response struct {
+        Transactions []models.Transaction `json:"transactions"`
+    }
+    if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+        return nil, err
+    }
+
+    return response.Transactions, nil
 }

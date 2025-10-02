@@ -1,7 +1,7 @@
 package clients
 
 import (
-    "github.com/ErzhanBersagurov/MVP_multibank/accounts-service/models"
+    "accounts-service/models"
 )
 
 // SberClient представляет клиент для работы с Сбербанком (заглушка для демо)

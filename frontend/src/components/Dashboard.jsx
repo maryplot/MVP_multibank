@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { accountsService } from '../services/accounts';
+import TransactionHistory from './TransactionHistory';
 import './Dashboard.css';
 import alfaIcon from '../assets/icon_alfa.png';
 import sberIcon from '../assets/icon_sber.png';
@@ -294,6 +295,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+      
     </div>
   );
 };

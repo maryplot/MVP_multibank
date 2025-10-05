@@ -54,7 +54,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 }
 
 func (h *AuthHandler) Login(c *gin.Context) {
-    var creds models.Credentials
+    var creds models.LoginRequest
     if err := c.ShouldBindJSON(&creds); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request format"})
         return

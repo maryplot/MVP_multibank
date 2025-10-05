@@ -1,0 +1,45 @@
+# Git
+.git
+.gitignore
+README.md
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Development
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env*
+
+# Node modules (will be handled per service)
+node_modules/
+
+# Go modules cache
+go.sum
+
+# Build artifacts
+dist/
+build/
+target/
+
+# Database
+*.db
+*.sqlite
+
+# Temporary files
+tmp/
+temp/

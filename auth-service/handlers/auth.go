@@ -25,6 +25,18 @@ func NewAuthHandler(userStorage *storage.UserStorage) *AuthHandler {
 func (h *AuthHandler) StartServer(port string) error {
     r := gin.Default()
     
+    r.GET("/", func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{
+            "service": "auth-service",
+            "version": "1.0",
+            "endpoints": []string{
+                "POST /register",
+                "POST /login",
+                "POST /validate",
+                "GET /health",
+            },
+        })
+    })
     r.POST("/register", h.Register)
     r.POST("/login", h.Login)
     r.POST("/validate", h.ValidateToken)

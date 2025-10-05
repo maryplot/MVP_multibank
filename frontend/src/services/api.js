@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { authService } from './auth';
 
-const API_BASE = '';
+const API_BASE = 'http://YOUR_SERVER_IP:8080';
 
 export const api = axios.create({
   baseURL: API_BASE,

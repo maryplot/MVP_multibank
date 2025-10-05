@@ -30,7 +30,7 @@ func (h *AuthHandler) StartServer(port string) error {
     r.POST("/validate", h.ValidateToken)
     r.GET("/health", h.HealthCheck)
     
-    return r.Run(":" + port)
+    return r.Run("0.0.0.0:" + port)
 }
 
 func (h *AuthHandler) Register(c *gin.Context) {

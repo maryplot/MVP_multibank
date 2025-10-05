@@ -127,5 +127,5 @@ func main() {
     })
 
     log.Println("Accounts service starting on :8081")
-    r.Run(":8081")
+    r.Run("0.0.0.0:8081")
 }

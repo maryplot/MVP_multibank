@@ -110,5 +110,5 @@ func main() {
     })
 
     log.Println("🚀 Transfer service starting on :8082")
-    r.Run(":8082")
+    r.Run("0.0.0.0:8082")
 }

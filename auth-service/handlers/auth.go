@@ -22,27 +22,17 @@ func NewAuthHandler(userStorage *storage.UserStorage) *AuthHandler {
     return &AuthHandler{userStorage: userStorage}
 }
 
-func (h *AuthHandler) StartServer(port string) error {
-    r := gin.Default()
-    
-    r.GET("/", func(c *gin.Context) {
-        c.JSON(http.StatusOK, gin.H{
-            "service": "auth-service",
-            "version": "1.0",
-            "endpoints": []string{
-                "POST /register",
-                "POST /login",
-                "POST /validate",
-                "GET /health",
-            },
-        })
+func (h *AuthHandler) Root(c *gin.Context) {
+    c.JSON(http.StatusOK, gin.H{
+        "service": "auth-service",
+        "version": "1.0",
+        "endpoints": []string{
+            "POST /register",
+            "POST /login",
+            "POST /validate",
+            "GET /health",
+        },
     })
-    r.POST("/register", h.Register)
-    r.POST("/login", h.Login)
-    r.POST("/validate", h.ValidateToken)
-    r.GET("/health", h.HealthCheck)
-    
-    return r.Run("0.0.0.0:" + port)
 }
 
 func (h *AuthHandler) Register(c *gin.Context) {
@@ -64,19 +54,23 @@ func (h *AuthHandler) Register(c *gin.Context) {
 }
 
 func (h *AuthHandler) Login(c *gin.Context) {
-    var loginReq models.LoginRequest
-    if err := c.ShouldBindJSON(&loginReq); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+    var creds models.Credentials
+    if err := c.ShouldBindJSON(&creds); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request format"})
         return
     }
 
-    user, err := h.userStorage.FindUserByUsername(loginReq.Username)
+    log.Printf("Login attempt for user: %s", creds.Username)
+    
+    user, err := h.userStorage.FindUserByUsername(creds.Username)
     if err != nil {
+        log.Printf("User lookup error: %v", err)
         c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
         return
     }
 
-    if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginReq.Password)); err != nil {
+    if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(creds.Password)); err != nil {
+        log.Printf("Password mismatch for user: %s", creds.Username)
         c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
         return
     }
@@ -86,23 +80,21 @@ func (h *AuthHandler) Login(c *gin.Context) {
         "exp":     time.Now().Add(time.Hour * 24).Unix(),
     })
 
-    // ИСПРАВЛЕННЫЙ БЛОК - добавляем получение JWT_SECRET из env
     jwtSecret := os.Getenv("JWT_SECRET")
     if jwtSecret == "" {
-        jwtSecret = "simple-secret-12345"  // ← ПРОСТОЙ СЕКРЕТ
+        jwtSecret = "simple-secret-12345"
     }
     
-    // Add logging for debugging
     log.Printf("🔐 JWT Secret used for token generation: %s", jwtSecret)
     
     tokenString, err := token.SignedString([]byte(jwtSecret))
-
     if err != nil {
         log.Printf("🔐 Token signing error: %v", err)
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation failed"})
         return
     }
 
+    log.Printf("Successful login for user: %s", creds.Username)
     c.JSON(http.StatusOK, gin.H{
         "token": tokenString,
         "user_id": user.ID,

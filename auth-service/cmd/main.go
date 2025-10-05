@@ -2,11 +2,14 @@ package main
 
 import (
 	"log"
-    "os"
-    
-    "auth-service/database"
-    "auth-service/handlers"
-    "auth-service/storage"
+	"os"
+	"time"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"auth-service/database"
+	"auth-service/handlers"
+	"auth-service/storage"
 )
 
 func main() {
@@ -23,6 +26,25 @@ func main() {
     // Инициализация обработчиков
     authHandler := handlers.NewAuthHandler(userStorage)
 
+    // Настройка CORS
+    r := gin.Default()
+    r.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"*"},
+        AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"},
+        AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+        ExposeHeaders:    []string{"Content-Length"},
+        AllowCredentials: true,
+        MaxAge:           12 * time.Hour,
+    }))
+
+    // Регистрация маршрутов
+    // Регистрация маршрутов
+    r.GET("/", authHandler.Root)
+    r.GET("/health", authHandler.HealthCheck)
+    r.POST("/login", authHandler.Login)
+    r.POST("/register", authHandler.Register)
+    r.GET("/validate", authHandler.ValidateToken)
+
     // Запуск сервера
     port := os.Getenv("PORT")
     if port == "" {
@@ -30,7 +52,7 @@ func main() {
     }
     
     log.Printf("Auth service starting on :%s", port)
-    if err := authHandler.StartServer(port); err != nil {
+    if err := r.Run(":" + port); err != nil {
         log.Fatal("Server failed:", err)
     }
 }

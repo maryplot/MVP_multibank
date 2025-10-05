@@ -38,12 +38,15 @@ func main() {
     }))
 
     // Регистрация маршрутов
-    // Регистрация маршрутов
-    r.GET("/", authHandler.Root)
-    r.GET("/health", authHandler.HealthCheck)
-    r.POST("/login", authHandler.Login)
-    r.POST("/register", authHandler.Register)
-    r.GET("/validate", authHandler.ValidateToken)
+    // Группировка маршрутов под префиксом /api
+    api := r.Group("/api")
+    {
+        api.GET("/", authHandler.Root)
+        api.GET("/health", authHandler.HealthCheck)
+        api.POST("/login", authHandler.Login)
+        api.POST("/register", authHandler.Register)
+        api.GET("/validate", authHandler.ValidateToken)
+    }
 
     // Запуск сервера
     port := os.Getenv("PORT")

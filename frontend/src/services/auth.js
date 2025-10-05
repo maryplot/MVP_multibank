@@ -1,8 +1,8 @@
-import { api } from './api';  // ← ДОБАВИТЬ ЭТОТ ИМПОРТ!
+import { authApi } from './api';
 
 export const authService = {
   login: async (username, password) => {
-    const response = await api.post('/api/login', { 
+    const response = await authApi.post('/login', {
       username, 
       password 
     });
@@ -10,7 +10,7 @@ export const authService = {
   },
   
   register: async (username, email, password) => {
-    const response = await api.post('/api/register', { 
+    const response = await authApi.post('/register', {
       username, 
       email, 
       password 
@@ -21,7 +21,11 @@ export const authService = {
   // Проверка валидности токена
   validateToken: async (token) => {
     try {
-      const response = await api.post('/api/validate', { token });
+      const response = await authApi.get('/validate', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       return response.data.valid;
     } catch (error) {
       return false;

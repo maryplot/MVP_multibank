@@ -1,10 +1,21 @@
 import axios from 'axios';
 import { authService } from './auth';
 
-const API_BASE = 'http://YOUR_SERVER_IP:8080';
+// Service base URLs
+const AUTH_BASE = 'http://51.250.40.186:8080/api';
+const ACCOUNTS_BASE = 'http://51.250.40.186:8081/api';
+const TRANSFER_BASE = 'http://51.250.40.186:8082/api';
 
-export const api = axios.create({
-  baseURL: API_BASE,
+export const authApi = axios.create({
+  baseURL: AUTH_BASE,
+});
+
+export const accountsApi = axios.create({
+  baseURL: ACCOUNTS_BASE,
+});
+
+export const transferApi = axios.create({
+  baseURL: TRANSFER_BASE,
 });
 
 // Текущий активный токен

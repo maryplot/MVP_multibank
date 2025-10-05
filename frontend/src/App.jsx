@@ -11,7 +11,11 @@ function App() {
   const [showRegister, setShowRegister] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
 
+  console.log('App rendered with token:', token);
+  console.log('localStorage token:', localStorage.getItem('token'));
+
   const handleLogin = (newToken) => {
+    console.log('handleLogin called with token:', newToken);
     setToken(newToken);
     setShowRegister(false);
   };
@@ -22,16 +26,19 @@ function App() {
   };
 
   const handleLogout = () => {
+    console.log('handleLogout called');
     localStorage.removeItem('token');
     localStorage.removeItem('user_id');
     setToken(null);
   };
 
   const handleTabChange = (tab) => {
+    console.log('handleTabChange called with tab:', tab);
     setActiveTab(tab);
   };
 
   if (!token) {
+    console.log('Rendering login/register screen');
     return showRegister ? (
       <Register
         onRegister={handleRegister}
@@ -44,6 +51,8 @@ function App() {
       />
     );
   }
+
+  console.log('Rendering dashboard/expenses screen with activeTab:', activeTab);
 
   return (
     <div className="app">

@@ -1,7 +1,6 @@
 package main
 
 import (
-    "io"
     "log"
     "net/http"
 
@@ -24,7 +23,12 @@ func main() {
         c.Next()
     })
 
-    // Добавляем JWT аутентификацию ко всем эндпоинтам
+    // Health check (без аутентификации)
+    r.GET("/health", func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{"status": "OK", "service": "accounts-service"})
+    })
+
+    // Добавляем JWT аутентификацию ко всем остальным эндпоинтам
     r.Use(middleware.JWTAuth())
 
     // Эндпоинт для получения всех счетов
@@ -82,6 +86,20 @@ func main() {
         c.JSON(http.StatusOK, account)
     })
 
+    // Эндпоинт для получения истории транзакций
+    r.GET("/transfer/history", func(c *gin.Context) {
+        userID := c.GetInt("userID")
+        authToken := c.GetHeader("Authorization")
+        
+        transactions, err := bankService.GetTransactionHistory(userID, authToken)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
+        
+        c.JSON(http.StatusOK, gin.H{"transactions": transactions})
+    })
+
     // Эндпоинт для обновления балансов (используется transfer-service)
     r.POST("/balance/update", func(c *gin.Context) {
         var req struct {
@@ -106,11 +124,6 @@ func main() {
         log.Printf("Updated balances: %s -%f, %s +%f", req.FromAccount, req.Amount, req.ToAccount, req.Amount)
         
         c.JSON(http.StatusOK, gin.H{"message": "Balances updated successfully"})
-    })
-
-    // Health check (без аутентификации)
-    r.GET("/health", func(c *gin.Context) {
-        c.JSON(http.StatusOK, gin.H{"status": "OK", "service": "accounts-service"})
     })
 
     log.Println("Accounts service starting on :8081")

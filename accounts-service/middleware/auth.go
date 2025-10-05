@@ -27,9 +27,10 @@ func JWTAuth() gin.HandlerFunc {
 
         jwtSecret := os.Getenv("JWT_SECRET")
         if jwtSecret == "" {
-             jwtSecret = "simple-secret-12345" 
+             jwtSecret = "simple-secret-12345"
         }
-        log.Printf("🔐 JWT Secret: %s", jwtSecret)  // ← ДОБАВИТЬ ЛОГ
+        log.Printf("🔐 JWT Secret from env: '%s'", os.Getenv("JWT_SECRET"))
+        log.Printf("🔐 JWT Secret being used: %s", jwtSecret)  // ← ДОБАВИТЬ ЛОГ
 
         token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
             return []byte(jwtSecret), nil

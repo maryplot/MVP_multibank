@@ -1,22 +1,47 @@
-import { useState, useEffect } from 'react';
+  import { useState, useEffect } from 'react';
 import { accountsService } from '../services/accounts';
+import './TransactionHistory.css';
 
 const TransactionHistory = () => {
+  console.log('TransactionHistory component rendered');
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Map account IDs to user-friendly names
+  const accountNames = {
+    'tinkoff_123': 'Тинькофф (****1234)',
+    'alfa_111': 'Альфа-Банк (****1111)',
+    'sber_789': 'Сбербанк (****9012)',
+    'sber_345': 'Сбербанк (****3456)'
+  };
+
+  // Get user-friendly name for account ID
+  const getAccountName = (accountId) => {
+    return accountNames[accountId] || accountId;
+  };
+
   useEffect(() => {
+    console.log('TransactionHistory useEffect triggered');
     loadHistory();
   }, []);
 
   const loadHistory = async () => {
     try {
+      console.log('Loading transaction history...');
       const data = await accountsService.getTransactionHistory();
-      setTransactions(data);
+      console.log('Transaction history loaded:', data);
+      // Check if data is an object with a transactions property or just an array
+      if (data && data.transactions) {
+        setTransactions(data.transactions);
+      } else if (Array.isArray(data)) {
+        setTransactions(data);
+      } else {
+        setTransactions([]);
+      }
     } catch (err) {
+      console.error('Error loading transaction history:', err);
       setError('Ошибка загрузки истории операций');
-      console.error('History load error:', err);
     } finally {
       setLoading(false);
     }
@@ -26,89 +51,53 @@ const TransactionHistory = () => {
     return new Date(dateString).toLocaleString('ru-RU');
   };
 
-  if (loading) return <div>Загрузка истории операций...</div>;
-  if (error) return <div style={{ color: 'red' }}>{error}</div>;
+  if (loading) return <div className="transaction-history-container">Загрузка истории операций...</div>;
+  if (error) return <div className="transaction-history-container" style={{ color: 'red' }}>{error}</div>;
 
   return (
-    <div style={{
-      marginTop: '20px',
-      marginBottom: '20px',
-      padding: '20px',
-      background: '#fff',
-      borderRadius: '10px',
-      border: '2px solid #e0e0e0'
-    }}>
-      <h3 style={{ 
-        margin: '0 0 20px 0',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px'
-      }}>
+    <div className="transaction-history-container">
+      <h3 className="transaction-history-title">
         📋 История операций
       </h3>
 
       {transactions.length === 0 ? (
-        <div style={{ textAlign: 'center', color: '#666', padding: '40px' }}>
+        <div className="transaction-history-empty">
           📭 Операций пока нет
         </div>
       ) : (
-        <div style={{ display: 'grid', gap: '12px' }}>
+        <div className="transaction-list">
           {transactions.map((transaction) => (
             <div
               key={transaction.id}
-              style={{
-                padding: '16px',
-                border: '1px solid #eee',
-                borderRadius: '8px',
-                background: '#fafafa'
-              }}
+              className="transaction-item"
             >
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '8px'
-              }}>
-                <span style={{ fontWeight: 'bold' }}>
-                  #{transaction.id}
+              <div className="transaction-header">
+                <span className="transaction-type">
+                  Перевод средств
                 </span>
-                <span style={{ 
-                  color: transaction.status === 'completed' ? '#4caf50' : '#ff9800',
-                  fontSize: '14px'
-                }}>
+                <span className={`transaction-status ${transaction.status === 'completed' ? 'completed' : 'pending'}`}>
                   {transaction.status === 'completed' ? '✅ Выполнено' : '⏳ В обработке'}
                 </span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div className="transaction-details">
                 <div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>Откуда:</div>
-                  <div>{transaction.from_account}</div>
+                  <div className="transaction-detail-label">Откуда:</div>
+                  <div className="transaction-detail-value">{getAccountName(transaction.from_account)}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>Куда:</div>
-                  <div>{transaction.to_account}</div>
+                  <div className="transaction-detail-label">Куда:</div>
+                  <div className="transaction-detail-value">{getAccountName(transaction.to_account)}</div>
                 </div>
               </div>
 
-              <div style={{ 
-                marginTop: '12px',
-                padding: '12px',
-                background: '#e8f5e8',
-                borderRadius: '6px',
-                textAlign: 'center'
-              }}>
-                <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#2e7d32' }}>
+              <div className="transaction-amount-container">
+                <div className="transaction-amount">
                   {transaction.amount.toLocaleString('ru-RU')} {transaction.currency}
                 </div>
               </div>
 
-              <div style={{ 
-                marginTop: '8px',
-                fontSize: '12px',
-                color: '#666',
-                textAlign: 'center'
-              }}>
+              <div className="transaction-date">
                 {formatDate(transaction.created_at)}
               </div>
             </div>
@@ -118,15 +107,7 @@ const TransactionHistory = () => {
 
       <button
         onClick={loadHistory}
-        style={{
-          marginTop: '20px',
-          padding: '10px 20px',
-          background: '#1976d2',
-          color: 'white',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: 'pointer'
-        }}
+        className="transaction-refresh-button"
       >
         🔄 Обновить историю
       </button>

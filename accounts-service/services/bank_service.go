@@ -130,20 +130,30 @@ func (s *BankService) GetAccountDetail(accountID string, userID int, authToken s
 }
 
 func (s *BankService) getTransactionHistory(userID int, authToken string) ([]models.Transaction, error) {
+    log.Printf("🔍 Getting transaction history for user %d", userID)
+    log.Printf("🔍 Auth token: %s", authToken)
+    
     client := &http.Client{}
     req, err := http.NewRequest("GET", "http://localhost:8082/transfer/history", nil)
     if err != nil {
+        log.Printf("🔍 Error creating request: %v", err)
         return nil, err
     }
 
     req.Header.Set("Authorization", authToken)
+    log.Printf("🔍 Sending request to transfer-service with auth header: %s", authToken)
+    
     resp, err := client.Do(req)
     if err != nil {
+        log.Printf("🔍 Error sending request: %v", err)
         return nil, err
     }
     defer resp.Body.Close()
+    
+    log.Printf("🔍 Response status: %d", resp.StatusCode)
 
     if resp.StatusCode != http.StatusOK {
+        log.Printf("🔍 Error: transfer-service returned status %d", resp.StatusCode)
         return nil, fmt.Errorf("transfer-service returned status %d", resp.StatusCode)
     }
 
@@ -151,8 +161,16 @@ func (s *BankService) getTransactionHistory(userID int, authToken string) ([]mod
         Transactions []models.Transaction `json:"transactions"`
     }
     if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+        log.Printf("🔍 Error decoding response: %v", err)
         return nil, err
     }
+    
+    log.Printf("🔍 Successfully retrieved %d transactions", len(response.Transactions))
 
     return response.Transactions, nil
+}
+
+// GetTransactionHistory возвращает историю транзакций пользователя
+func (s *BankService) GetTransactionHistory(userID int, authToken string) ([]models.Transaction, error) {
+    return s.getTransactionHistory(userID, authToken)
 }

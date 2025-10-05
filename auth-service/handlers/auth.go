@@ -1,9 +1,10 @@
 package handlers
 
 import (
+    "log"
     "net/http"
     "time"
-    "os"  // ← ДОБАВИТЬ ЭТОТ ИМПОРТ!
+    "os"
     
     "github.com/gin-gonic/gin"
     "github.com/golang-jwt/jwt/v5"
@@ -78,9 +79,14 @@ func (h *AuthHandler) Login(c *gin.Context) {
     if jwtSecret == "" {
         jwtSecret = "simple-secret-12345"  // ← ПРОСТОЙ СЕКРЕТ
     }
+    
+    // Add logging for debugging
+    log.Printf("🔐 JWT Secret used for token generation: %s", jwtSecret)
+    
     tokenString, err := token.SignedString([]byte(jwtSecret))
 
     if err != nil {
+        log.Printf("🔐 Token signing error: %v", err)
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation failed"})
         return
     }

@@ -7,7 +7,7 @@ import sberIcon from '../assets/icon_sber.png';
 import tbankIcon from '../assets/icon_tbank.png';
 import avatarImage from '../assets/avatar.jpg';
 
-const Dashboard = () => {
+const Dashboard = ({ onLogout }) => {
   const [accounts, setAccounts] = useState([]);
   const [totalBalance, setTotalBalance] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -103,14 +103,17 @@ const Dashboard = () => {
 
   const loadData = async () => {
     try {
+      console.log('Loading data...');
       setLoading(true);
       const [accountsData, balanceData] = await Promise.all([
         accountsService.getAccounts(),
         accountsService.getTotalBalance()
       ]);
+      console.log('Data loaded:', { accountsData, balanceData });
       setAccounts(accountsData);
       setTotalBalance(balanceData);
     } catch (err) {
+      console.error('Error loading data:', err);
       setError('Ошибка загрузки данных: ' + err.message);
     } finally {
       setLoading(false);
@@ -167,8 +170,13 @@ const Dashboard = () => {
             <img src={avatarImage} alt="Антон" />
           </div>
           <span className="username">АНТОН</span>
+        </div>
+        <div className="header-actions">
           <button className="theme-toggle" onClick={toggleTheme}>
             {isDarkMode ? '☀️' : '🌙'}
+          </button>
+          <button className="logout-button" onClick={onLogout}>
+            Выйти
           </button>
         </div>
       </div>
@@ -295,6 +303,9 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+      
+      {/* Transaction History */}
+      <TransactionHistory />
       
     </div>
   );

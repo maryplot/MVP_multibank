@@ -1,0 +1,111 @@
+.transaction-history-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: var(--card-bg, #fff);
+  border-radius: 10px;
+  border: 2px solid var(--border-color, #e0e0e0);
+  color: var(--text-primary, #333);
+}
+
+.transaction-history-title {
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary, #333);
+}
+
+.transaction-history-empty {
+  text-align: center;
+  color: var(--text-secondary, #666);
+  padding: 40px;
+}
+
+.transaction-list {
+  display: grid;
+  gap: 12px;
+}
+
+.transaction-item {
+  padding: 16px;
+  border: 1px solid var(--border-color, #eee);
+  border-radius: 8px;
+  background: var(--card-bg, #fafafa);
+  color: var(--text-primary, #333);
+}
+
+.transaction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.transaction-type {
+  font-weight: bold;
+}
+
+.transaction-status {
+  font-size: 14px;
+}
+
+.transaction-status.completed {
+  color: var(--success-color, #4caf50);
+}
+
+.transaction-status.pending {
+  color: #ff9800;
+}
+
+.transaction-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.transaction-detail-label {
+  font-size: 12px;
+  color: var(--text-secondary, #666);
+}
+
+.transaction-detail-value {
+  font-weight: 500;
+}
+
+.transaction-amount-container {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--success-bg, #e8f5e8);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.transaction-amount {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--success-color, #2e7d32);
+}
+
+.transaction-date {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-secondary, #666);
+  text-align: center;
+}
+
+.transaction-refresh-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: var(--button-bg, #1976d2);
+  color: var(--button-text, white);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.transaction-refresh-button:hover {
+  opacity: 0.9;
+}

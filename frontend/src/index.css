@@ -20,6 +20,10 @@
   --shadow: rgba(0,0,0,0.1);
   --card-bg: #ffffff;
   --input-bg: #ffffff;
+  --success-color: #2e7d32;
+  --success-bg: #e8f5e8;
+  --button-bg: #1976d2;
+  --button-text: #ffffff;
   
   color: var(--text-primary);
   background-color: var(--bg-primary);
@@ -40,6 +44,10 @@
   --shadow: rgba(0,0,0,0.3);
   --card-bg: #2d2d2d;
   --input-bg: #2d2d2d;
+  --success-color: #81c784;
+  --success-bg: #1b5e20;
+  --button-bg: #1976d2;
+  --button-text: #ffffff;
 }
 
 body {

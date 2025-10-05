@@ -21,14 +21,21 @@
 /* Header */
 .header {
   margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .user-profile {
   display: flex;
   align-items: center;
   gap: 15px;
-  justify-content: space-between;
-  width: 100%;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .theme-toggle {
@@ -368,4 +375,20 @@
 .confirm-button:hover {
   background: #0056CC;
   transform: translateY(-1px);
+}
+
+.logout-button {
+  background: none;
+  border: 1px solid #007AFF;
+  color: #007AFF;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #007AFF;
+  color: white;
 }

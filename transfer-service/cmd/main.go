@@ -30,14 +30,25 @@ func main() {
         c.Next()
     })
 
-    // JWT аутентификация
-    r.Use(middleware.JWTAuth())
-
     // Логирование всех запросов
     r.Use(func(c *gin.Context) {
         log.Printf("📍 Incoming request: %s %s", c.Request.Method, c.Request.URL.Path)
         c.Next()
     })
+
+    // Health check (без аутентификации)
+    r.GET("/health", func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{"status": "OK", "service": "transfer-service"})
+    })
+
+    // Отладочный эндпоинт - список всех routes (без аутентификации)
+    r.GET("/debug/routes", func(c *gin.Context) {
+        routes := r.Routes()
+        c.JSON(http.StatusOK, gin.H{"routes": routes})
+    })
+
+    // JWT аутентификация (только для остальных эндпоинтов)
+    r.Use(middleware.JWTAuth())
 
     // Перевод между своими счетами (основной эндпоинт для frontend)
     r.POST("/transfer", func(c *gin.Context) {
@@ -96,17 +107,6 @@ func main() {
         userID := c.GetInt("userID")
         transactions := transferService.GetTransactionHistory(userID)
         c.JSON(http.StatusOK, gin.H{"transactions": transactions})
-    })
-
-    // Health check
-    r.GET("/health", func(c *gin.Context) {
-        c.JSON(http.StatusOK, gin.H{"status": "OK", "service": "transfer-service"})
-    })
-
-    // Отладочный эндпоинт - список всех routes
-    r.GET("/debug/routes", func(c *gin.Context) {
-        routes := r.Routes()
-        c.JSON(http.StatusOK, gin.H{"routes": routes})
     })
 
     log.Println("🚀 Transfer service starting on :8082")

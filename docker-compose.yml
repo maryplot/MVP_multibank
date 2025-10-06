@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -17,7 +17,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - DATABASE_URL=host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable
+      - DATABASE_URL=host=postgres port=5433 user=postgres password=postgres dbname=auth_db sslmode=disable
       - JWT_SECRET=simple-secret-12345 
     volumes:
       - ./pkg:/go/pkg/mod/github.com/ErzhanBersagurov/MVP_multibank/pkg@v0.0.0
@@ -29,7 +29,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - DATABASE_URL=host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable
+      - DATABASE_URL=host=postgres port=5433 user=postgres password=postgres dbname=auth_db sslmode=disable
       - JWT_SECRET=simple-secret-12345
  
   transfer-service:
@@ -37,7 +37,7 @@ services:
     ports:
       - "8082:8082"
     environment:
-      - DATABASE_URL=host=postgres user=postgres password=postgres dbname=auth_db sslmode=disable
+      - DATABASE_URL=host=postgres port=5433 user=postgres password=postgres dbname=auth_db sslmode=disable
       - JWT_SECRET=simple-secret-12345
     depends_on:
       - auth-service

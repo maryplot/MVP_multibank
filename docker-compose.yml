@@ -52,7 +52,7 @@ services:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:8080
+      - VITE_API_URL=http://95.165.27.134:8080
     depends_on:
       - auth-service
       - accounts-service
